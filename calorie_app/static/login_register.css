@@ -1,0 +1,126 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #fff;
+  font-family: "Open Sans", sans-serif;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('http://media-ict.nl/assets/img/bg.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+
+a:focus {
+  outline: none;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus {
+  outline: none;
+}
+/** Custom styles **/
+
+.vis-hidden {
+  visibility: hidden !important;
+}
+
+a {
+  -webkit-transition: 0.25s;
+  -moz-transition: 0.25s;
+  -o-transition: 0.25s;
+  transition: 0.25s;
+}
+
+#mainWrap {
+  min-height: 100%;
+  overflow: auto;
+  padding-bottom: 96px;
+}
+
+
+#xlogin {
+  border-radius: 25px;
+  border: 0px dotted white;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 480px;
+  padding: 20px 40px;
+  left: 50%;
+  position: fixed;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+#xlogin h1 {
+  text-align: center;
+  font-weight: 700;
+  margin: 5px 0 15px;
+}
+
+#xlogin h3 {
+  text-align: center;
+  font-size: 18px;
+  color: #bbb;
+  margin: 0 0 20px;
+}
+
+#xlogin .input-group-addon {
+  border: 0 none;
+}
+
+#xlogin .form-control {
+  border: 0 none;
+}
+
+#xlogin .form-control:focus {
+  box-shadow: none;
+}
+
+#xlogin .formSubmit {
+  margin-bottom: 25px;
+}
+
+#xlogin .submitWrap {
+  text-align: right;
+}
+
+#xlogin .formNotice {
+  margin: 0;
+  font-size: 13px;
+}
+
+#xlogin .formNotice span {
+  cursor: pointer;
+  color: #428BCA;
+}
+
+#xlogin .formNotice2 {
+  margin: 0;
+  font-size: 13px;
+}
+
+#xlogin .formNotice2 span {
+  cursor: pointer;
+  color: #428BCA;
+}
+
+#xlogin .formNotice span:hover,
+#xlogin .formNotice span:focus {
+  color: #2A6496;
+  text-decoration: underline;
+}
+
+#xlogin #regForm {
+  display: none;
+}
+
+#xlogin hr {
+  color: white;
+}

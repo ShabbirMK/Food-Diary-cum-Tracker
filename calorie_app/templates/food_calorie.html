@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='food_calorie.css') }}">
+	<script src="{{ url_for('static', filename='jquery-3.5.1.min.js') }}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		function update(id) {
+			var amount = Number(document.getElementById("calculated_" + id).innerHTML.split("k")[0]);
+			var quantity = document.getElementById("update_" + id).value;
+			document.getElementById("calculated_" + id).innerHTML = amount * quantity + "kcal";
+		}
+	</script>
+
+
+</head>
+<body style="background-color: black;">
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+	  <div class="container">
+	    <a class="navbar-brand" href="#">Your Food Diary</a>
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+
+	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav ml-auto">
+      		{% if current_user.is_authenticated %}
+	        <li class="nav-item active">
+	          <a class="nav-link" href="{{ url_for('account') }}">Profile</a>
+	        </li>
+	      	{% else %}
+	        <li class="nav-item active">
+	          <a class="nav-link" href="{{ url_for('userlogin') }}">Login</a>
+	        </li>
+	        {% endif %}
+	        <li class="nav-item">
+	          <a class="nav-link" href="{{ url_for('about') }}">About</a>
+	        </li>
+	        <li class="nav-item">
+	          <div class="dropdown show">
+	            <a class="nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	              Services
+	            </a>
+
+	            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+	              <a class="dropdown-item" href="{{ url_for('body_calorie') }}">Calculate Body Calorie</a>
+	              <a class="dropdown-item" href="{{ url_for('food_calorie') }}">Calculate Food Calorie</a>
+	            </div>
+	          </div>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+	        </li>
+	        {% if auth %}
+	        <li class="nav-item active">
+	          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+	        </li>
+	        {% endif %}
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+	<!-- Search Bar Starts -->
+	<div class="col-lg-4 offset-lg-4" style="padding-top: 5%;">
+		<form method="POST" action="{{ url_for('food_calorie') }}">
+			<div class="input-group mb-3">
+				{% if food %}
+				<input type="text" class="form-control" placeholder="Search Food item" name="fooditem" value="{{ food }}">
+				{% else %}
+				<input type="text" class="form-control" placeholder="Search Food item" name="fooditem">
+				{% endif %}
+			  	<div class="input-group-append">
+			    	<button class="input-group-text" type="submit" name="search"><i class="fa fa-search"></i></button>
+			  	</div>				
+			</div>
+		</form>
+	</div>
+	<!-- Search Bar Ends -->
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-6">
+			    {% if foodList %}
+				    <div class="card">
+				    	<div class="card-header">
+				    		<h2 style="font-weight: 600;">Your Search Results:</h2>
+				    	</div>
+				    	<div class="card-body">
+					    	<div style="height: 700px; overflow-y: auto;">
+							    <table class="table table-striped table-bordered" id="foodItemsTable">
+									<thead class="thead-dark">
+										<th></th>
+										<th style="width: 25%;">Food Item</th>
+										<th>Serving Size</th>
+										<th style="width: 21%;">Number of Serving</th>
+										<th>Total Calories</th>
+									</thead>
+									<tbody>
+										{% for i, foodItem in foodList%}
+											<tr>
+												<form method="POST" action="{{ url_for('add_to_cart', id=i) }}">
+													<td><button class="input-group-text" name="add_to_cart"><i class="fa fa-plus"></i></button></td>
+
+													<td><a href="{{ foodItem['detailsURL'] }}">{{ foodItem['food_name'] }}</a></td>
+
+													<td>{{ foodItem['serving_size'] }}</td>
+													<td>
+														<input type="number" class="form-control" id="update_{{ i }}" name="quantity" value="1" onchange='update("{{ i }}")'>
+													</td>
+													<td>
+														<p id="calculated_{{ i }}">{{ foodItem['Calories'] }}</p>
+													</td>
+												</form>
+											</tr>
+										{% endfor %}
+									</tbody>
+							    </table>
+					    	</div>
+				    	</div>
+					</div>
+			    {% endif %}
+			</div>
+			<div class="col-lg-6">
+				<div class="card">
+					<div class="card-header">
+						<h2 style="font-weight: 600;">Your Diet</h2>	
+					</div>
+					<div class="card-body">
+				    	<div style="height: 638px; overflow-y: auto;">
+						    <table class="table table-striped table-bordered" id="dietCart">
+								<thead class="thead-dark">
+									<th></th>
+									<th style="width: 30%;">Food Item</th>
+									<th style="width: 20%;">Number of Serving</th>
+									<th>Serving Size</th>
+									<th>Calories per Serving</th>
+								</thead>
+								{% for i, (key, foodItem) in diet %}
+								<tbody>
+									<tr>
+										<form method="POST" action="{{ url_for('remove_from_cart', name=key) }}">
+											<td><button class="input-group-text" name="remove_from_cart"><i class="fa fa-minus"></i></button></td>
+
+											<td><a href="{{ foodItem['detailsURL'] }}">{{ foodItem['food_name'] }}</a></td>
+
+											<td>{{ foodItem['quantity'] }}</td>
+											<td>{{ foodItem['serving_size'] }}</td>
+											<td>{{ foodItem['Calories'] }}</td>
+										</form>
+									</tr>
+								</tbody>
+								{% endfor %}
+						    </table>
+						</div>
+					</div>
+					<div class="card-footer">
+						<form action="{{ url_for('food_calorie') }}" method="POST">
+							{% if current_user.is_authenticated %}
+							<button class="btn btn-primary">Add to Today's Diet!</button>
+							{% endif %}
+							<h4 style="float: right; font-weight: 800;">Total Calories: <u>{{ summary }}</u> KCal</h4>
+						</form>
+					</div>
+				</div>
+			</div>		
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_register.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home.css') }}">
+
+	<script src="{{ url_for('static', filename='jquery-3.5.1.min.js') }}"></script>
+	<script>
+		$(document).ready(function() {
+	        $("#xlogin").hide();
+	        $("#xlogin").fadeIn(600);
+
+		$('.formNotice span').click(function() {
+			$("#logForm").hide();
+			$("#regForm").fadeIn(500);
+		});
+      
+       
+      	$('.formNotice2 span').click(function() {
+            $("#regForm").hide();
+				$("#logForm").slideDown(600);
+			});
+		});
+	</script>
+	<style type="text/css">
+		{% if register %}
+			#xlogin #regForm {
+				display: block;
+			}
+			#xlogin #logForm {
+				display: none;
+			}
+		{% endif %}
+	</style>
+
+
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+	  <div class="container">
+	    <a class="navbar-brand" href="#">Your Food Diary</a>
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+
+	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav ml-auto">
+	        <li class="nav-item active">
+	          <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" href="{{ url_for('about') }}">About</a>
+	        </li>
+	        <li class="nav-item">
+	          <div class="dropdown show">
+	            <a class="nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	              Services
+	            </a>
+
+	            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+	              <a class="dropdown-item" href="{{ url_for('body_calorie') }}">Calculate Body Calorie</a>
+	              <a class="dropdown-item" href="{{ url_for('food_calorie') }}">Calculate Food Calorie</a>
+	            </div>
+	          </div>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+	        </li>
+	        {% if auth %}
+	        <li class="nav-item active">
+	          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+	        </li>
+	        {% endif %}
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+	<div id="mainWrap">
+		<div id="xlogin" >
+			<h1>
+				<i class="fa fa-lock"></i> Please Login
+			</h1>
+
+			<form action="{{ url_for('userlogin') }}" id="logForm" method="POST" class="form-horizontal">
+				{{ formLogin.csrf_token }}
+
+				{% if invalid_credentials %}
+					<p style="color: red; text-align: center;">Invalid email ID or Password. Try Again!</p>
+				{% endif %}
+
+				<!-- Input Fields -->
+				<div class="form-group">
+                    {% if formLogin.email.errors %}
+                        {{ formLogin.email(class="form-control form-control-lg is-invalid", placeholder="Email") }}
+                        <div class="invalid-feedback">
+                            {% for error in formLogin.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ formLogin.email(class="form-control input-lg") }}
+                    {% endif %}
+				</div>
+				<div class="form-group">
+                    {% if formLogin.password.errors %}
+                        {{ formLogin.password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in formLogin.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ formLogin.password(class="form-control input-lg") }}
+                    {% endif %}
+				</div>
+
+				<!-- Options & Buttons -->
+				<div class="row form-group formSubmit">
+					<div class="col-sm-7">
+						<div class="checkbox">
+							<label>
+								{{formLogin.remember(checked=True)}} Keep me logged in
+							</label>
+						</div>
+					</div>
+					<div class="col-sm-5 submitWrap">
+						<input id="login" name="submit_login" class="btn btn-primary btn-lg" type="submit" value="Login Now!"/>
+					</div>
+				</div>
+
+				<hr style="border-color: white;">
+
+				<div class="form-group formNotice">
+					<h3 class="text-center">Don't have a account?
+						 <span> Register now!</span>
+					</h3>
+				</div>
+				<!-- Login Form Ends -->
+			</form>
+
+			<form action="{{ url_for('userlogin') }}" id="regForm" method="POST" class="form-horizontal">
+				{{ formRegister.csrf_token }}
+
+				<!-- Input Fields -->
+				<div class="form-group">
+                    {% if formRegister.username.errors %}
+                        {{ formRegister.username(class="form-control form-control-lg is-invalid", placeholder="Username") }}
+                        <div class="invalid-feedback">
+                            {% for error in formRegister.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ formRegister.username(class="form-control input-lg") }}
+                    {% endif %}
+					<!-- <input name="username" type="text" class="form-control input-lg" placeholder="Username" autocomplete="off" required> -->
+				</div>
+				<div class="form-group">
+                    {% if formRegister.email.errors %}
+                        {{ formRegister.email(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in formRegister.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ formRegister.email(class="form-control input-lg") }}
+                    {% endif %}
+					<!-- <input name="email" type="text" class="form-control input-lg" placeholder="E-mail address" autocomplete="off" required> -->
+				</div>
+				<div class="form-group">
+                    {% if formRegister.password.errors %}
+                        {{ formRegister.password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in formRegister.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ formRegister.password(class="form-control input-lg") }}
+                    {% endif %}
+					<!-- <input name="password" type="password" class="form-control input-lg" placeholder="Password" autocomplete="off" required> -->
+				</div>
+				<div class="form-group">
+                    {% if formRegister.retypedpassword.errors %}
+                        {{ formRegister.retypedpassword(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in formRegister.retypedpassword.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ formRegister.retypedpassword(class="form-control input-lg") }}
+                    {% endif %}
+				</div>
+
+				<!-- Options & Buttons -->
+				<div class="col-sm-12" style="margin: auto;">
+					<div class="checkbox">
+						<label>
+						{{ formRegister.agree(checked=True) }} <a href="#" style="color: blue;">I agree with the terms and conditions</a>
+						</label>
+					</div>
+				</div>
+				<div class="form-group formSubmit">
+					<div class="col-sm-9 submitWrap">
+						<input name="submit_register" class="btn btn-lg btn-success" type="submit" value="Register Now!"/>
+					</div>
+				</div>
+
+				<hr style="border-color: white;">
+
+				<div class="form-group formNotice2">
+					<h3>
+						<p class="text-center">Already have a account?  
+						<i class="fa fa-chevron-right "></i>
+						<span>Login now!</span>
+						</p>
+					</h3>
+				</div>
+				<!-- Registration Form Ends -->
+			</form>
+		</div>
+	</div>
+</body>
+</html>
